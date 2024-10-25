@@ -81,6 +81,17 @@ io.on('connection', async (socket) => {
     socket.emit('previousMessages', messages); // Send the latest messages to the client
   });
 
+  // Handle typing status
+  socket.on('typing', (isTyping) => {
+    const username = users[socket.id];
+    socket.broadcast.emit('typingStatus', { username, isTyping });
+  });
+  socket.on('typing', (isTyping) => {
+    const username = users[socket.id];
+    socket.broadcast.emit('typing', { username, isTyping });
+  });
+
+  // Handle disconnecting users
   socket.on('disconnect', () => {
     const username = users[socket.id];
     delete users[socket.id];
@@ -95,3 +106,4 @@ io.on('connection', async (socket) => {
 
 const PORT = 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
